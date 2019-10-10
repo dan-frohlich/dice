@@ -1,4 +1,4 @@
-# dice
+# Dice
 dice notation processor
 
 ## Building
