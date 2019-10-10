@@ -29,7 +29,7 @@ Dice Roller Shell
 $
 ```
 
-## in Code
+## Code
 
 ```
 test := `3d6`
