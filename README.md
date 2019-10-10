@@ -43,7 +43,7 @@ if err != nil {
 
 ## Remaining Work
 
-* implement best of and worst of (dice poll) ops : 3b4d6 (3 best or 4d6)
+* implement best of and worst of (dice poll) ops : 3b4d6 (3 best of 4d6)
 * implement multi character operators (ie dF - a 3 sided die which yields [-1, 0, +1])
 * support default operands ie: d6 == 1d6
 
