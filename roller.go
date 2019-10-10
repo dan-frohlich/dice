@@ -3,6 +3,7 @@ package dice
 import (
 	"fmt"
 	"math/rand"
+	"regexp"
 	"time"
 )
 
@@ -25,14 +26,16 @@ func NewRoller() Roller {
 }
 
 func (r roller) Roll(input string) (result int, plan string, err error) {
-	node, parseOk := r.p.reset(input).parse()
+	re := regexp.MustCompile(` |\t|\n`)
+	sanitized := re.ReplaceAllString(input, "")
+	node, parseOk := r.p.reset(sanitized).parse()
 
 	if parseOk {
 		result, ok := node.Eval(r.r)
 		if ok {
 			return int(result), node.String(), nil
 		}
-		return 0, "", fmt.Errorf("failed to evaluate %s", input)
+		return 0, "", fmt.Errorf("failed to evaluate %s", sanitized)
 	}
-	return 0, "", fmt.Errorf("failed to parse %s", input)
+	return 0, "", fmt.Errorf("failed to parse %s", sanitized)
 }
