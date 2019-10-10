@@ -26,6 +26,7 @@ func (lexer *lexer) init(data string) *lexer {
 	return lexer
 }
 
+//TODO implement best of and worst of (dice poll) ops : 3b4d6 (3 best or 4d6)
 func (l *lexer) next() int {
 	n := len(l.data)
 	l.kind = tokenUnk
