@@ -23,6 +23,10 @@ Dice Roller Shell
 <- 1 : (1 d 6 -> 1 [1])
 -> 3 * ( 1 d 100 / 2)
 <- 120 : (3 * ((1 d 100 -> 80 [80]) / 2 -> 40) -> 120)
+-> 3b(4d6)
+<- 13 : (3 b (4 d 6 -> 15 [2,3,4,6]) -> 13 [3,4,6])
+-> 2w(4d6)
+<- 5 : (2 w (4 d 6 -> 13 [2,3,4,4]) -> 5 [2,3])
 -> exit
 $
 ```
@@ -43,7 +47,6 @@ if err != nil {
 
 ## Remaining Work
 
-* implement best of and worst of (dice poll) ops : 3b4d6 (3 best of 4d6)
 * implement multi character operators (ie dF - a 3 sided die which yields [-1, 0, +1])
 * support default operands ie: d6 == 1d6
 

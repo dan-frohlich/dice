@@ -3,6 +3,7 @@ package dice
 import (
 	"fmt"
 	"math/rand"
+	"sort"
 	"strings"
 )
 
@@ -11,6 +12,7 @@ type number int
 type node interface {
 	Eval(r *rand.Rand) (number, bool)
 	String() string
+	Equals(other node) bool
 }
 
 // binary operator AST node
@@ -62,9 +64,64 @@ func (n *binary) Eval(r *rand.Rand) (number, bool) {
 		}
 		n.value, n.values = roll(r, left, right)
 		return n.value, true
+	case 'b':
+		if right == 0 || left == 0 {
+			n.value = 0
+			return n.value, true
+		}
+		b, ok := n.right.(*binary)
+		if !ok {
+			return 0, false
+		}
+		lv, _ := n.left.Eval(r)
+		if len(b.values) < int(lv) {
+			return 0, false
+		}
+		n.values = sortNumbers(b.values)[len(b.values)-int(left):]
+		n.value = 0
+		for _, v := range n.values {
+			n.value += v
+		}
+		return n.value, true
+	case 'w':
+		if right == 0 || left == 0 {
+			n.value = 0
+			return n.value, true
+		}
+		b, ok := n.right.(*binary)
+		if !ok {
+			return 0, false
+		}
+		lv, _ := n.left.Eval(r)
+		if len(b.values) < int(lv) {
+			return 0, false
+		}
+		n.values = sortNumbers(b.values)[:left]
+		n.value = 0
+		for _, v := range n.values {
+			n.value += v
+		}
+		return n.value, true
 	}
 	n.value = 0
 	return n.value, false
+}
+
+func (n *binary) Equals(other node) bool {
+	o, ok := other.(*binary)
+	return ok && o.op == n.op && n.left.Equals(o.left) && n.right.Equals(o.right)
+}
+
+func sortNumbers(z []number) []number {
+	ints := make([]int, len(z))
+	for i, v := range z {
+		ints[i] = int(v)
+	}
+	sort.Ints(ints)
+	for i, v := range ints {
+		z[i] = number(v)
+	}
+	return z
 }
 
 func roll(r *rand.Rand, diceCount, sides number) (result number, parts []number) {
@@ -102,4 +159,9 @@ func (n *leaf) Eval(r *rand.Rand) (number, bool) {
 
 func (n *leaf) String() string {
 	return fmt.Sprintf("%v", n.value) // %v = default format
+}
+
+func (n *leaf) Equals(other node) bool {
+	l, ok := other.(*leaf)
+	return ok && l.value == n.value
 }

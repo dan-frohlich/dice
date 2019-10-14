@@ -13,7 +13,9 @@ func (p *diceParser) init(data string) *diceParser {
 		'-': 1,
 		'*': 2,
 		'/': 2,
-		'd': 3,
+		'd': 4,
+		'b': 3,
+		'w': 3,
 	}
 	p.lexer.next()
 	return p

@@ -36,7 +36,7 @@ func (l *lexer) next() int {
 		//x := fmt.Sprintf("char[%d]: %d: '%s'\n", l.pos, char, string([]byte{char}))
 		//fmt.Println(x)
 		switch char := l.data[l.pos]; char {
-		case '+', '-', '*', '/', 'd':
+		case '+', '-', '*', '/', 'd', 'b', 'w':
 			l.pos++
 			l.kind = tokenOp
 			l.oper = char
