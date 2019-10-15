@@ -15,6 +15,10 @@ type node interface {
 	Equals(other node) bool
 }
 
+type sided interface {
+	Sides() []int
+}
+
 // binary operator AST node
 type binary struct {
 	op     byte
@@ -60,6 +64,10 @@ func (n *binary) Eval(r *rand.Rand) (number, bool) {
 	case 'd':
 		if right == 0 || left == 0 {
 			n.value = 0
+			return n.value, true
+		}
+		if s, ok := n.right.(sided); ok {
+			n.value, n.values = rollSides(r, left, s.Sides())
 			return n.value, true
 		}
 		n.value, n.values = roll(r, left, right)
@@ -124,6 +132,18 @@ func sortNumbers(z []number) []number {
 	return z
 }
 
+func rollSides(r *rand.Rand, diceCount number, sides []int) (result number, parts []number) {
+	acc := 0
+	parts = make([]number, diceCount)
+	for i := 0; i < int(diceCount); i++ {
+		roll := r.Intn(len(sides))
+		rawValue := sides[roll]
+		parts[i] = number(rawValue)
+		acc += rawValue
+	}
+	return number(acc), parts
+}
+
 func roll(r *rand.Rand, diceCount, sides number) (result number, parts []number) {
 	acc := 0
 	parts = make([]number, diceCount)
@@ -146,6 +166,7 @@ func (n *binary) String() string {
 // leaf values AST node
 type leaf struct {
 	value number
+	sides []int
 }
 
 func (n *leaf) init(value number) node {
@@ -164,4 +185,24 @@ func (n *leaf) String() string {
 func (n *leaf) Equals(other node) bool {
 	l, ok := other.(*leaf)
 	return ok && l.value == n.value
+}
+
+// fudge-sided value AST node
+type fudge struct{}
+
+func (n *fudge) Sides() []int {
+	return []int{-1, 0, 1}
+}
+
+func (n *fudge) Eval(r *rand.Rand) (number, bool) {
+	return 3, true
+}
+
+func (n *fudge) String() string {
+	return "F"
+}
+
+func (n *fudge) Equals(other node) bool {
+	_, ok := other.(*fudge)
+	return ok
 }

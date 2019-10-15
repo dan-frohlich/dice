@@ -9,24 +9,24 @@ type lexer struct {
 }
 
 const (
-	tokenUnk  = iota // unknown
-	tokenErr         // error
-	tokenNum         // number
-	tokenLPar        // left parenthesis
-	tokenRPar        // right parenthesis
-	tokenOp          // operator
+	tokenUnk   = iota // unknown
+	tokenErr          // error
+	tokenNum          // number
+	tokenLPar         // left parenthesis
+	tokenRPar         // right parenthesis
+	tokenOp           // operator
+	tokenFudge        // FudgeDie
 )
 
-func (lexer *lexer) init(data string) *lexer {
-	lexer.data = data
-	lexer.pos = 0
-	lexer.kind = tokenUnk
-	lexer.num = 0
-	lexer.oper = 0
-	return lexer
+func (l *lexer) init(data string) *lexer {
+	l.data = data
+	l.pos = 0
+	l.kind = tokenUnk
+	l.num = 0
+	l.oper = 0
+	return l
 }
 
-//TODO implement best of and worst of (dice poll) ops : 3b4d6 (3 best or 4d6)
 func (l *lexer) next() int {
 	n := len(l.data)
 	l.kind = tokenUnk
@@ -36,7 +36,7 @@ func (l *lexer) next() int {
 		//x := fmt.Sprintf("char[%d]: %d: '%s'\n", l.pos, char, string([]byte{char}))
 		//fmt.Println(x)
 		switch char := l.data[l.pos]; char {
-		case '+', '-', '*', '/', 'd', 'b', 'w':
+		case '*', '+', '-', '/', 'b', 'd', 'w':
 			l.pos++
 			l.kind = tokenOp
 			l.oper = char
@@ -48,6 +48,9 @@ func (l *lexer) next() int {
 			l.pos++
 			l.kind = tokenRPar
 			l.oper = char
+		case 'F':
+			l.kind = tokenFudge
+			l.num = 3
 		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.':
 			var value number = 0
 			var divisor number = 1
@@ -63,6 +66,8 @@ func (l *lexer) next() int {
 			}
 			l.kind = tokenNum
 			l.num = value / divisor
+		case ' ':
+			//no-op
 		default:
 			l.kind = tokenErr
 			break

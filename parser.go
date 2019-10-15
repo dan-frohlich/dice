@@ -47,14 +47,18 @@ func (p *diceParser) parse() (node, bool) {
 
 func (p *diceParser) parsePrimary() (node, bool) {
 	switch p.lexer.kind {
+	case tokenFudge:
+		node := &fudge{}
+		p.lexer.next()
+		return node, true
 	case tokenNum:
-		node := new(leaf).init(p.lexer.num)
+		node := &leaf{value: p.lexer.num}
 		p.lexer.next()
 		return node, true
 	case tokenLPar:
 		p.lexer.next()
 		node, ok := p.parse()
-		if (!ok) {
+		if !ok {
 			return nil, false
 		}
 		if p.lexer.kind == tokenRPar {
@@ -72,13 +76,13 @@ func (p *diceParser) parseOperators(lhs node, min_precedence int) (node, bool) {
 		op := p.lexer.oper
 		p.lexer.next()
 		rhs, ok = p.parsePrimary()
-		if (!ok) {
+		if !ok {
 			return nil, false
 		}
 		for p.lexer.kind == tokenOp && p.precedence[p.lexer.oper] > p.precedence[op] {
 			op2 := p.lexer.oper
 			rhs, ok = p.parseOperators(rhs, p.precedence[op2])
-			if (!ok) {
+			if !ok {
 				return nil, false
 			}
 		}

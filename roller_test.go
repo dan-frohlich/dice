@@ -29,11 +29,11 @@ func Test_can_add(t *testing.T) {
 
 func Test_various_dice(t *testing.T) {
 	tests := map[string][]int{
-		"3d6":     {3, 18},
-		"2d10":    {2, 20},
-		"1d20":    {1, 20},
-		"1d100":   {1, 100},
-		"3d6+2":   {5, 20},
+		"3d6":   {3, 18},
+		"2d10":  {2, 20},
+		"1d20":  {1, 20},
+		"1d100": {1, 100},
+		"3d6+2": {5, 20},
 	}
 
 	samples := 10000

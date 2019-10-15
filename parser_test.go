@@ -5,6 +5,72 @@ import (
 	"testing"
 )
 
+func Test_fudge(t *testing.T) {
+	tests := map[string]*binary{
+		"2dF": {
+			op:     'd',
+			left:   &leaf{value: 2},
+			right:  &fudge{},
+			value:  1,
+			values: []number{-1, 1},
+		},
+		"3dF": {
+			op:     'd',
+			left:   &leaf{value: 3},
+			right:  &fudge{},
+			value:  1,
+			values: []number{-1, 1, 1},
+		},
+		"4dF": {
+			op:     'd',
+			left:   &leaf{value: 4},
+			right:  &fudge{},
+			value:  1,
+			values: []number{-1, 1, 1, 0},
+		},
+	}
+
+	for test, expected := range tests {
+		p := new(diceParser).init(test)
+
+		failed := false
+
+		n, ok := p.parse()
+		if !ok {
+			t.Errorf("failed to parse %v", test)
+			failed = true
+		}
+		if !n.Equals(expected) {
+			t.Fatalf("%v expected to parse as %v but parsed as %v", test, expected, n)
+			failed = true
+		}
+
+		r := rand.New(rand.NewSource(11))
+		actual, ok := n.Eval(r)
+		if !ok {
+			t.Errorf("failed to evaluate %v", n)
+			failed = true
+		}
+
+		r2 := rand.New(rand.NewSource(11))
+
+		expectedVal, ok := expected.Eval(r2)
+		if !ok {
+			t.Errorf("failed to evaluate %v", expected)
+			failed = true
+		}
+
+		if actual != expectedVal {
+			t.Errorf("expected %v for %v but got %v", expectedVal, test, actual)
+			failed = true
+		}
+
+		if !failed {
+			t.Logf("OK: evaluated %s as: %v", test, expected)
+		}
+	}
+}
+
 func Test_best_worst(t *testing.T) {
 
 	tests := map[string]*binary{
@@ -65,7 +131,7 @@ func Test_best_worst(t *testing.T) {
 			t.Errorf("failed to parse %v", test)
 			failed = true
 		}
-		if ! n.Equals(expected) {
+		if !n.Equals(expected) {
 			t.Fatalf("%v expected to parse as %v but parsed as %v", test, expected, n)
 			failed = true
 		}
@@ -90,7 +156,7 @@ func Test_best_worst(t *testing.T) {
 			failed = true
 		}
 
-		if ! failed {
+		if !failed {
 			t.Logf("OK: evaluated %s as: %v", test, expected)
 		}
 	}
@@ -131,7 +197,7 @@ func Test_best_worst_neg(t *testing.T) {
 			failed = true
 		}
 
-		if ! n.Equals(expected) {
+		if !n.Equals(expected) {
 			t.Errorf("%v did not parse to %v as expecetd", test, expected)
 			failed = true
 		}
@@ -143,7 +209,7 @@ func Test_best_worst_neg(t *testing.T) {
 			failed = true
 		}
 
-		if ! failed {
+		if !failed {
 			t.Logf("OK: parsed (but faield to evaluate) %s as: %v", test, n)
 		}
 	}
