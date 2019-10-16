@@ -23,7 +23,7 @@ func Test_parser(t *testing.T) {
 	testCases := parserTestCases{
 		"3":  parserResult{node: &node{kind: NodeTypeLeaf, v: 3}},
 		"34": parserResult{node: &node{kind: NodeTypeLeaf, v: 33}},
-		"z7": parserResult{err: errors.New("unregistered Token Type: err:unhandled char: z @ offset 1")},
+		"z7": parserResult{err: errors.New("unhandled char: z @ offset 0")},
 		"3d6": parserResult{
 			node: &node{
 				kind:     NodeTypeInfixOperator,
@@ -91,6 +91,32 @@ func Test_parser(t *testing.T) {
 						operand1: &node{kind: NodeTypeLeaf, v: 1},
 						operand2: &node{kind: NodeTypeLeaf, v: 4},
 					},
+				},
+			},
+		},
+		"3b(4d6)": parserResult{
+			node: &node{
+				kind:     NodeTypeInfixOperator,
+				operator: "b",
+				operand1: &node{kind: NodeTypeLeaf, v: 3},
+				operand2: &node{
+					kind:     NodeTypeInfixOperator,
+					operator: "d",
+					operand1: &node{kind: NodeTypeLeaf, v: 4},
+					operand2: &node{kind: NodeTypeLeaf, v: 6},
+				},
+			},
+		},
+		"1w(3d6)": parserResult{
+			node: &node{
+				kind:     NodeTypeInfixOperator,
+				operator: "w",
+				operand1: &node{kind: NodeTypeLeaf, v: 1},
+				operand2: &node{
+					kind:     NodeTypeInfixOperator,
+					operator: "d",
+					operand1: &node{kind: NodeTypeLeaf, v: 3},
+					operand2: &node{kind: NodeTypeLeaf, v: 6},
 				},
 			},
 		},

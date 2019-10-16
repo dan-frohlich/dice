@@ -14,6 +14,7 @@ func NewLexer(in io.Reader) Lexer {
 	return &lexer{
 		buf: make([]byte, 1, 1),
 		in:  in,
+		pos: -1,
 	}
 }
 

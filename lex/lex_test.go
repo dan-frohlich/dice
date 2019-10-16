@@ -61,18 +61,18 @@ func Test_lexer(t *testing.T) {
 			{Kind: TokenEndOfStream},
 		},
 		"fdx-2": {
-			{Kind: TokenError, Value: "unhandled char: f @ offset 1"},
+			{Kind: TokenError, Value: "unhandled char: f @ offset 0"},
 		},
 		"3dx-2": {
 			{Kind: TokenLiteral, Value: "3"},
 			{Kind: TokenInfixOperator, Value: "d"},
-			{Kind: TokenError, Value: "unhandled char: x @ offset 3"},
+			{Kind: TokenError, Value: "unhandled char: x @ offset 2"},
 		},
 		"1d6%2": {
 			{Kind: TokenLiteral, Value: "1"},
 			{Kind: TokenInfixOperator, Value: "d"},
 			{Kind: TokenLiteral, Value: "6"},
-			{Kind: TokenError, Value: "unhandled char: % @ offset 4"},
+			{Kind: TokenError, Value: "unhandled char: % @ offset 3"},
 		},
 	}
 	runLexerTestCases(tests, t)

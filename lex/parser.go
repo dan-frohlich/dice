@@ -1,6 +1,7 @@
 package lex
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"strconv"
@@ -26,6 +27,7 @@ func NewParser(in io.Reader) Parser {
 		TokenPostfixOperator: handlePFO,
 		TokenOpenParen:       p.handleOP,
 		TokenCloseParen:      p.handleCP,
+		TokenError:           handleErr,
 	}
 	return p
 }
@@ -98,6 +100,10 @@ func handleLiteral(prev *node, t Token) (*node, error) {
 
 func handlePFO(ast *node, t Token) (i *node, e error) {
 	return operator(NodeTypePostfixOperator, ast, t), nil
+}
+
+func handleErr(ast *node, t Token) (i *node, e error) {
+	return nil, errors.New(t.Value)
 }
 
 func handleIFO(ast *node, t Token) (i *node, e error) {

@@ -18,7 +18,7 @@ func detector(l *lexer) stateFn {
 	case ')':
 		l.token = &Token{Kind: TokenCloseParen, Value: string(l.buf)}
 		return advanceOneByte
-	case '+', '-', '*', '/':
+	case '+', '-', '*', '/', 'b', 'w':
 		l.token = &Token{Kind: TokenInfixOperator, Value: string(l.buf)}
 		return advanceOneByte
 	case '!':
