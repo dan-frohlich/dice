@@ -161,12 +161,12 @@ func runParserTestCase(test string, expected parserResult, t *testing.T) {
 	p := NewParser(strings.NewReader(test))
 	ast, err := p.Parse()
 	n, ok := ast.(*node)
-	if ! ok {
+	if !ok {
 		t.Errorf("ERROR %s : result %v (%T) is not type %T", test, ast, ast, &node{})
 	}
 	actual := parserResult{node: n, err: err}
 
-	if ! expected.Equal(actual) {
+	if !expected.Equal(actual) {
 		t.Errorf("ERROR %v\texpected\t%v\tgot\t%v", test, expected, actual)
 	} else {
 		t.Logf("OK %v \tParsed as %v", test, actual)

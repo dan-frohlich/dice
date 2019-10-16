@@ -91,7 +91,7 @@ func handleLiteral(prev *node, t Token) (*node, error) {
 	if prev == nil {
 		return n, err
 	}
-	switch (prev.kind) {
+	switch prev.kind {
 	case NodeTypeLeaf:
 		return nil, fmt.Errorf("parse error: %v %v", prev, n)
 	case NodeTypeInfixOperator:
@@ -145,7 +145,6 @@ func (p *parser) operator(kind NodeType, ast *node, t Token) *node {
 }
 
 func handleEOS(ast *node, t Token) (i *node, e error) {
-
 	return ast, nil
 }
 

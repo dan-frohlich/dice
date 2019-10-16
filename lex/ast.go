@@ -30,7 +30,7 @@ func (n *node) Evaluate() int {
 }
 
 func (n *node) String() string {
-	switch (n.kind) {
+	switch n.kind {
 	case NodeTypeLeaf:
 		return fmt.Sprintf("%d", n.v)
 	case NodeTypePostfixOperator:

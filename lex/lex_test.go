@@ -100,7 +100,7 @@ func runLexerTestCase(test string, expected tokenResult, t *testing.T) {
 		func(t Token) {
 			actual = append(actual, t)
 		})
-	if ! expected.Equal(actual) {
+	if !expected.Equal(actual) {
 		t.Errorf("ERROR %v\texpected\t%v\tgot\t%v", test, expected, actual)
 	} else {
 		t.Logf("OK %v \tlexed as %v", test, actual)
