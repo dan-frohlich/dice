@@ -76,7 +76,7 @@ func Test_parser(t *testing.T) {
 				operand2: &node{kind: NodeTypeLeaf, v: 2},
 			},
 		},
-		"3d(2+(1d4))": parserResult{
+		"3d(2+1d4)": parserResult{
 			node: &node{
 				kind:     NodeTypeInfixOperator,
 				operator: "d",
@@ -94,7 +94,24 @@ func Test_parser(t *testing.T) {
 				},
 			},
 		},
-		"3b(4d6)": parserResult{
+		"3d(1d4+2)": parserResult{
+			node: &node{
+				kind:     NodeTypeInfixOperator,
+				operator: "d",
+				operand1: &node{kind: NodeTypeLeaf, v: 3},
+				operand2: &node{
+					kind:     NodeTypeInfixOperator,
+					operator: "+",
+					operand1: &node{
+						kind:     NodeTypeInfixOperator,
+						operator: "d",
+						operand1: &node{kind: NodeTypeLeaf, v: 1},
+						operand2: &node{kind: NodeTypeLeaf, v: 4},
+					},
+					operand2: &node{kind: NodeTypeLeaf, v: 2},
+				},
+			},
+		}, "3b4d6": parserResult{
 			node: &node{
 				kind:     NodeTypeInfixOperator,
 				operator: "b",
@@ -107,7 +124,7 @@ func Test_parser(t *testing.T) {
 				},
 			},
 		},
-		"1w(3d6)": parserResult{
+		"1w3d6": parserResult{
 			node: &node{
 				kind:     NodeTypeInfixOperator,
 				operator: "w",

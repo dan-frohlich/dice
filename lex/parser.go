@@ -11,6 +11,13 @@ type Parser interface {
 	Parse() (AST, error)
 }
 
+var operatorPrecedence = map[string]byte{
+	"d": 3, "dF": 3, "d%": 3,
+	"!": 2, "b": 2, "w": 2,
+	"*": 1, "/": 1,
+	"+": 0, "-": 0,
+}
+
 type parser struct {
 	l        Lexer
 	stack    []*node
@@ -23,8 +30,8 @@ func NewParser(in io.Reader) Parser {
 	p.registry = map[TokenType]tokenProcessor{
 		TokenLiteral:         handleLiteral,
 		TokenEndOfStream:     handleEOS,
-		TokenInfixOperator:   handleIFO,
-		TokenPostfixOperator: handlePFO,
+		TokenInfixOperator:   p.handleIFO,
+		TokenPostfixOperator: p.handlePFO,
 		TokenOpenParen:       p.handleOP,
 		TokenCloseParen:      p.handleCP,
 		TokenError:           handleErr,
@@ -98,22 +105,36 @@ func handleLiteral(prev *node, t Token) (*node, error) {
 	}
 }
 
-func handlePFO(ast *node, t Token) (i *node, e error) {
-	return operator(NodeTypePostfixOperator, ast, t), nil
+func (p *parser) handlePFO(ast *node, t Token) (i *node, e error) {
+	return p.operator(NodeTypePostfixOperator, ast, t), nil
 }
 
 func handleErr(ast *node, t Token) (i *node, e error) {
 	return nil, errors.New(t.Value)
 }
 
-func handleIFO(ast *node, t Token) (i *node, e error) {
-	return operator(NodeTypeInfixOperator, ast, t), nil
+func (p *parser) handleIFO(ast *node, t Token) (i *node, e error) {
+	return p.operator(NodeTypeInfixOperator, ast, t), nil
 }
 
-func operator(kind NodeType, ast *node, t Token) *node {
+func (p *parser) operator(kind NodeType, ast *node, t Token) *node {
 	o1 := ast
 	if o1 == nil {
 		o1 = &node{kind: NodeTypeLeaf, v: 1}
+	}
+	if o1.kind == NodeTypeInfixOperator || o1.kind == NodeTypePostfixOperator {
+		pp := operatorPrecedence[o1.operator]
+		cp := operatorPrecedence[t.Value]
+		if cp > pp {
+			n := &node{
+				kind:     kind,
+				operator: t.Value,
+				operand1: o1.operand2,
+			}
+			o1.operand2 = n
+			p.push(o1)
+			return n
+		}
 	}
 	n := &node{
 		kind:     kind,
