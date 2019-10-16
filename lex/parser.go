@@ -31,7 +31,8 @@ func NewParser(in io.Reader) Parser {
 		TokenLiteral:         handleLiteral,
 		TokenEndOfStream:     handleEOS,
 		TokenInfixOperator:   p.handleIFO,
-		TokenPostfixOperator: p.handlePFO,
+		TokenPostfixOperator: p.handlePos,
+		TokenPrefixOperator:  p.handlePre,
 		TokenOpenParen:       p.handleOP,
 		TokenCloseParen:      p.handleCP,
 		TokenError:           handleErr,
@@ -104,8 +105,10 @@ func handleLiteral(prev *node, t Token) (*node, error) {
 		return nil, fmt.Errorf("parse error: %v %v", prev, n)
 	}
 }
-
-func (p *parser) handlePFO(ast *node, t Token) (i *node, e error) {
+func (p *parser) handlePre(ast *node, t Token) (i *node, e error) {
+	return p.operator(NodeTypePrefixOperator, ast, t), nil
+}
+func (p *parser) handlePos(ast *node, t Token) (i *node, e error) {
 	return p.operator(NodeTypePostfixOperator, ast, t), nil
 }
 
@@ -122,7 +125,7 @@ func (p *parser) operator(kind NodeType, ast *node, t Token) *node {
 	if o1 == nil {
 		o1 = &node{kind: NodeTypeLeaf, v: 1}
 	}
-	if o1.kind == NodeTypeInfixOperator || o1.kind == NodeTypePostfixOperator {
+	if o1.kind == NodeTypeInfixOperator || o1.kind == NodeTypePrefixOperator || o1.kind == NodeTypePostfixOperator {
 		pp := operatorPrecedence[o1.operator]
 		cp := operatorPrecedence[t.Value]
 		if cp > pp {

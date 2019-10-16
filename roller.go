@@ -1,9 +1,10 @@
 package dice
 
 import (
-	"fmt"
+	"dice/lex"
 	"math/rand"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -13,12 +14,10 @@ type Roller interface {
 
 type roller struct {
 	r *rand.Rand
-	p *diceParser
 }
 
 func NewSeededRoller(seed int64) Roller {
-	p := new(diceParser).init("")
-	return roller{r: rand.New(rand.NewSource(seed)), p: p}
+	return roller{r: rand.New(rand.NewSource(seed))}
 }
 
 func NewRoller() Roller {
@@ -28,14 +27,15 @@ func NewRoller() Roller {
 func (r roller) Roll(input string) (result int, plan string, err error) {
 	re := regexp.MustCompile(` |\t|\n`)
 	sanitized := re.ReplaceAllString(input, "")
-	node, parseOk := r.p.reset(sanitized).parse()
+	p := lex.NewParser(strings.NewReader(sanitized))
+	var ast lex.AST
+	ast, err = p.Parse()
 
-	if parseOk {
-		result, ok := node.Eval(r.r)
-		if ok {
-			return int(result), node.String(), nil
+	if err == nil {
+		result, _, err = ast.Evaluate(r.r)
+		if err == nil {
+			return int(result), ast.Plan(), nil
 		}
-		return 0, "", fmt.Errorf("failed to evaluate %s", sanitized)
 	}
-	return 0, "", fmt.Errorf("failed to parse %s", sanitized)
+	return 0, "", err
 }

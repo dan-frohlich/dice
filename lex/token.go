@@ -13,6 +13,7 @@ const (
 	TokenUnknown TokenType = iota
 	TokenLiteral
 	TokenPostfixOperator
+	TokenPrefixOperator
 	TokenInfixOperator
 	TokenOpenParen
 	TokenCloseParen
@@ -28,7 +29,9 @@ func (t TokenType) String() string {
 	case TokenLiteral:
 		s = "lit"
 	case TokenPostfixOperator:
-		s = "pfo"
+		s = "pos"
+	case TokenPrefixOperator:
+		s = "pre"
 	case TokenInfixOperator:
 		s = "ifo"
 	case TokenOpenParen:

@@ -169,7 +169,7 @@ func runParserTestCase(test string, expected parserResult, t *testing.T) {
 	if !expected.Equal(actual) {
 		t.Errorf("ERROR %v\texpected\t%v\tgot\t%v", test, expected, actual)
 	} else {
-		t.Logf("OK %v \tParsed as %v", test, actual)
+		t.Logf("OK %12v parsed as %v", test, actual)
 	}
 }
 
@@ -181,4 +181,19 @@ func (r parserResult) Equal(other parserResult) bool {
 		other.err != nil &&
 		r.node.Equal(other.node) &&
 		strings.EqualFold(r.err.Error(), other.err.Error())
+}
+
+func (n *node) Equal(m *node) bool {
+	return equal(n, m)
+}
+
+func equal(m, n *node) bool {
+	if m == nil || n == nil {
+		return n == nil && m == nil
+	}
+	return n.kind == m.kind &&
+		strings.EqualFold(n.operator, m.operator) &&
+		equal(n.operand1, m.operand1) &&
+		equal(n.operand2, m.operand2)
+
 }
