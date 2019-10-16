@@ -205,9 +205,9 @@ func (n *node) Plan() string {
 	case NodeTypeLeaf:
 		return fmt.Sprintf("%d", n.v)
 	case NodeTypePostfixOperator:
-		return fmt.Sprintf("(%v%s %v)", n.operand1, n.operator, n.vs)
+		return fmt.Sprintf("(%v%s %v)", n.operand1.Plan(), n.operator, n.vs)
 	case NodeTypeInfixOperator:
-		return fmt.Sprintf("(%v%s%v %v)", n.operand1, n.operator, n.operand2, n.vs)
+		return fmt.Sprintf("(%v%s%v %v)", n.operand1.Plan(), n.operator, n.operand2.Plan(), n.vs)
 	default:
 		return fmt.Sprintf("[unhandled node type: %v]", n.kind)
 	}
