@@ -39,6 +39,9 @@ type node struct {
 
 //Evaluate evaluates the AST
 func (n *node) Evaluate(r *rand.Rand) (int, []int, error) {
+	if n == nil {
+		return 0, []int{}, fmt.Errorf("nill node")
+	}
 	switch n.kind {
 	case NodeTypeLeaf:
 		return n.v, []int{n.v}, nil
@@ -47,7 +50,7 @@ func (n *node) Evaluate(r *rand.Rand) (int, []int, error) {
 	case NodeTypePostfixOperator:
 		return n.evalPostfix(r)
 	default:
-		return 0, []int{0}, fmt.Errorf("unknown node type: %v", n)
+		return 0, []int{}, fmt.Errorf("unknown node type: %v", n)
 	}
 }
 
@@ -67,9 +70,9 @@ func (n *node) evalPostfix(r *rand.Rand) (int, []int, error) {
 		result, results, err = n.evalDice(r, left, 100)
 	case "dF":
 		_, results, err = n.evalDice(r, left, 3)
-		result =0
+		result = 0
 		for i, v := range results {
-			results[i] = v-2
+			results[i] = v - 2
 			result += results[i]
 		}
 	default:
@@ -108,7 +111,7 @@ func (n *node) evalInfix(r *rand.Rand) (int, []int, error) {
 
 func (n *node) evalBest(r *rand.Rand, left int, rights []int) (int, []int, error) {
 	if left > len(rights) {
-		return 0, []int{0}, fmt.Errorf("%v can't gather %d best items from a slice of %d items", n, left, len(rights))
+		return 0, []int{}, fmt.Errorf("%v can't gather %d best items from a slice of %d items", n, left, len(rights))
 	}
 	s := make([]int, len(rights))
 	for i, v := range rights {
@@ -128,7 +131,7 @@ func (n *node) evalBest(r *rand.Rand, left int, rights []int) (int, []int, error
 
 func (n *node) evalWorst(r *rand.Rand, left int, rights []int) (int, []int, error) {
 	if left > len(rights) {
-		return 0, []int{0}, fmt.Errorf("%v can't gather %d worst items from a slice of %d items", n, left, len(rights))
+		return 0, []int{}, fmt.Errorf("%v can't gather %d worst items from a slice of %d items", n, left, len(rights))
 	}
 	s := make([]int, len(rights))
 	n.v = 0

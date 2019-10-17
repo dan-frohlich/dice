@@ -20,6 +20,7 @@ func (r tokenResult) String() string {
 
 func Test_lexer(t *testing.T) {
 	tests := lexerTestCases{
+		"": {{Kind: TokenEndOfStream}},
 		"3d6+12": {
 			{Kind: TokenLiteral, Value: "3"},
 			{Kind: TokenInfixOperator, Value: "d"},

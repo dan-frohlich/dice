@@ -80,6 +80,7 @@ func (r diceASTExpectedResult) Equal(other anyASTResult) bool {
 
 func Test_ast(t *testing.T) {
 	tests := astTestCases{
+		"":       simpleASTResult{z: []int{}, e: errors.New("nill node")},
 		"1wd%":   diceASTExpectedResult{min: 1, max: 100},
 		"1":      simpleASTResult{v: 1},
 		"1+3":    simpleASTResult{v: 4},

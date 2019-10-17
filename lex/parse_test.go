@@ -21,6 +21,7 @@ type parserTestCases map[string]parserResult
 
 func Test_parser(t *testing.T) {
 	testCases := parserTestCases{
+		"":   parserResult{},
 		"3":  parserResult{node: &node{kind: NodeTypeLeaf, v: 3}},
 		"34": parserResult{node: &node{kind: NodeTypeLeaf, v: 33}},
 		"z7": parserResult{err: errors.New("unhandled char: z @ offset 0")},
