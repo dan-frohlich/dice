@@ -66,6 +66,8 @@ func (n *node) evalPostfix(r *rand.Rand) (int, []int, error) {
 		return result, results, err
 	}
 	switch n.operator {
+	case "!":
+		result, results, err = n.explodingDice(r)
 	case "d%":
 		result, results, err = n.evalDice(r, left, 100)
 	case "dF":
@@ -79,6 +81,33 @@ func (n *node) evalPostfix(r *rand.Rand) (int, []int, error) {
 		err = fmt.Errorf("operator not implemented: %s", n.operator)
 	}
 	return result, results, err
+}
+
+func (n *node) explodingDice(r *rand.Rand) (int, []int, error) {
+
+	source := n.operand1
+	if source == nil {
+		return 0, []int{}, fmt.Errorf("%v - nothing to explode", n)
+	}
+	if source.kind == NodeTypeLeaf {
+		return 0, []int{}, fmt.Errorf("%v - can't explode a leaf node", n)
+	}
+	if source.operand2 == nil {
+		return 0, []int{}, fmt.Errorf("%v - can't determine dice sides", n)
+	}
+	sides := source.operand2.v
+	n.vs = []int{}
+	n.v = 0
+	for _, v := range source.vs {
+		n.vs = append(n.vs, v)
+		n.v += v
+		if v == sides {
+			roll := r.Intn(sides) + 1
+			n.v += roll
+			n.vs = append(n.vs, roll)
+		}
+	}
+	return n.v, n.vs, nil
 }
 
 func (n *node) evalInfix(r *rand.Rand) (int, []int, error) {

@@ -51,5 +51,15 @@ if err != nil {
 
 ## Remaining Work
 
-* exploding dice (`!` operator)
+* for Savage Worlds we need a few more things to help support wild dice
+* support generating a slice of ASTs via `,` delimiter for example:
+```
+-> d6,d8
+<- 1 : (1d6 [1]) , 3 : (1d8 [3])
+```
 
+* it would be great if this could support best/worst...
+```
+-> 1b(d6,d8)
+<- 3 : (1d8 [3]) (best of 1 : (1d6 [1]) , 3 : (1d8 [3]))
+```
