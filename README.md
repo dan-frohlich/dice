@@ -51,6 +51,5 @@ if err != nil {
 
 ## Remaining Work
 
-* implement multi character operators (ie dF - a 3 sided die which yields [-1, 0, +1])
-* support default operands ie: d6 == 1d6
+* exploding dice (`!` operator)
 
