@@ -81,6 +81,7 @@ func (r diceASTExpectedResult) Equal(other anyASTResult) bool {
 func Test_ast(t *testing.T) {
 	tests := astTestCases{
 		"":       simpleASTResult{z: []int{}, e: errors.New("nill node")},
+		"!":      simpleASTResult{e: errors.New("(1!) - can't explode a leaf node")},
 		"1wd%":   diceASTExpectedResult{min: 1, max: 100},
 		"1":      simpleASTResult{v: 1},
 		"1+3":    simpleASTResult{v: 4},
@@ -90,6 +91,8 @@ func Test_ast(t *testing.T) {
 		"2b3d6":  diceASTExpectedResult{min: 2, max: 12},
 		"2d6+12": diceASTExpectedResult{min: 14, max: 24},
 		"2d6!":   simpleASTResult{v: 13, z: []int{1, 6, 6}},
+		"2d%":    diceASTExpectedResult{min: 2, max: 200},
+		"3!":     simpleASTResult{e: errors.New("(3!) - can't explode a leaf node")},
 		"3b4d6":  simpleASTResult{v: 17, z: []int{5, 6, 6}},
 		"3d6":    diceASTExpectedResult{min: 3, max: 18},
 		"4/2":    simpleASTResult{v: 2},

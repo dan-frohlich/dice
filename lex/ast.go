@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"sort"
+	"strings"
 )
 
 //AST Abstract Syntax Tree
@@ -94,6 +95,9 @@ func (n *node) explodingDice(r *rand.Rand) (int, []int, error) {
 	}
 	if source.operand2 == nil {
 		return 0, []int{}, fmt.Errorf("%v - can't determine dice sides", n)
+	}
+	if ! strings.HasPrefix(source.operator, "d") {
+		return 0, []int{}, fmt.Errorf("%v - can't explode a non die expression", n)
 	}
 	sides := source.operand2.v
 	n.vs = []int{}
@@ -211,6 +215,7 @@ func (n *node) evalMathOperators(r *rand.Rand, left int, right int) (int, error)
 		err = fmt.Errorf("unhandled operator: %v", n.operator)
 	}
 	n.v = result
+	n.vs = []int{result}
 	return n.v, err
 }
 func (n *node) String() string {

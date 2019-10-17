@@ -12,8 +12,9 @@ type Parser interface {
 }
 
 var operatorPrecedence = map[string]byte{
-	"d": 3, "dF": 3, "d%": 3,
-	"!": 2, "b": 2, "w": 2,
+	"d": 4, "dF": 4, "d%": 4,
+	"!": 3,
+	"b": 2, "w": 2,
 	"*": 1, "/": 1,
 	"+": 0, "-": 0,
 }
