@@ -57,7 +57,7 @@ func (p *parser) push(n *node) {
 func (p *parser) Parse() (AST, error) {
 	p.l.Lex(p.accumulator)
 	for i, n := range p.stack {
-		if i > 0 {
+		if i > 0 && p != nil && p.stack[i-1] != nil {
 			p.stack[i-1].operand2 = n
 		}
 	}
