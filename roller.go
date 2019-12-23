@@ -1,7 +1,7 @@
 package dice
 
 import (
-	"dice/lex"
+	"github.com/dan-frohlich/dice/lex"
 	"math/rand"
 	"regexp"
 	"strings"

@@ -2,10 +2,11 @@ package main
 
 import (
 	"bufio"
-	"dice"
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/dan-frohlich/dice"
 )
 
 func main() {
