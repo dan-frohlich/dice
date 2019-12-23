@@ -9,11 +9,31 @@ import (
 )
 
 func main() {
+
+	r := dice.NewRoller()
+
+	if len(os.Args) > 1 {
+		for i, expr := range os.Args {
+			switch (i) {
+			case 0:
+				continue
+			default:
+				result, _, err := r.Roll(expr)
+				if err != nil {
+					fmt.Fprintln(os.Stderr, err)
+					os.Exit(1)
+				}
+				fmt.Print(result, " ")
+			}
+		}
+		fmt.Println()
+		return
+	}
+
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Dice Roller Shell")
 	fmt.Println("---------------------")
 
-	r := dice.NewRoller()
 	var text string
 	for {
 		fmt.Print("-> ")
