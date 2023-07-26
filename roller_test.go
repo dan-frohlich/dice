@@ -79,7 +79,7 @@ func Test_various(t *testing.T) {
 	for test, expected := range tests {
 		actual, _, err := roller.Roll(test)
 		if err != nil {
-			t.Error(err)
+			t.Error("ERROR", test, "error:", err)
 			continue
 		}
 		if actual != expected {
